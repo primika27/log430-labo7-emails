@@ -1,0 +1,20 @@
+@startuml
+  node Magasin {
+    component "KrakenD" 
+    component "store_manager.py" 
+    database "MySQL 1"
+    database "Redis"
+    "KrakenD" <--> "store_manager.py"
+    "store_manager.py" <--> "MySQL 1"
+    "store_manager.py" <--> "Redis"
+  }
+
+  node Coolriel {
+    component "Kafka" 
+    component "coolriel.py" 
+  }
+
+  "KrakenD" <--> "Kafka" : HTTPS
+  "Kafka" <--> "coolriel.py" : HTTPS
+
+@enduml
