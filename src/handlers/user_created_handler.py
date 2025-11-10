@@ -29,6 +29,13 @@ class UserCreatedHandler(EventHandler):
         name = event_data.get('name')
         email = event_data.get('email')
         datetime = event_data.get('datetime')
+        user_type = event_data.get('type', 'client')  # Default to 'client' if not specified
+        
+        # Customize welcome message based on user type
+        if user_type.lower() == 'employee':
+            welcome_message = "Salut et bienvenue dans l'équipe ! Nous sommes ravis de t'accueillir parmi nous. Tu trouveras toutes les informations nécessaires dans ton espace employé."
+        else:  # client or any other type
+            welcome_message = "Merci d'avoir visité notre magazin. Si vous avez des questions ou des problèmes concernant votre achat, n'hésitez pas à nous contacter."
 
         current_file = Path(__file__)
         project_root = current_file.parent.parent   
@@ -38,9 +45,10 @@ class UserCreatedHandler(EventHandler):
             html_content = html_content.replace("{{name}}", name)
             html_content = html_content.replace("{{email}}", email)
             html_content = html_content.replace("{{creation_date}}", datetime)
+            html_content = html_content.replace("{{welcome_message}}", welcome_message)
         
         filename = os.path.join(self.output_dir, f"welcome_{user_id}.html")
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(html_content)
         
-        self.logger.debug(f"Courriel HTML généré à {name} (ID: {user_id}), {filename}")
+        self.logger.debug(f"Courriel HTML généré à {name} (ID: {user_id}, Type: {user_type}), {filename}")
